@@ -8,17 +8,21 @@ import com.mobile.weatherappdvt.model.CurrentWeatherInfo
 class WeatherViewModel constructor(repository: WeatherRepository): ViewModel() {
 
     private val currentWeatherInfo: LiveData<CurrentWeatherInfo> = repository.currentWeather
-    val currentTemp = Transformations.map(currentWeatherInfo) {
-        it.main.feelsLike
+    val currentTemp: LiveData<Double?> = Transformations.map(currentWeatherInfo) {
+        it.main?.temp
     }
-    val minTemp = Transformations.map(currentWeatherInfo) {
-        it.main.feelsLike
+    val minTemp: LiveData<Double?> = Transformations.map(currentWeatherInfo) {
+        it.main?.tempMin
     }
-    val maxTemp = Transformations.map(currentWeatherInfo) {
-        it.main.feelsLike
+    val maxTemp: LiveData<Double?> = Transformations.map(currentWeatherInfo) {
+        it.main?.tempMax
     }
-    val weatherDescription = Transformations.map(currentWeatherInfo) {
-        it.weather[0].main
+    val weatherDescription: LiveData<String?> = Transformations.map(currentWeatherInfo) {
+        it.weather?.get(0)?.main
+    }
+
+    val errorMessage: LiveData<String?> = Transformations.map(currentWeatherInfo) {
+        it.errorMessage
     }
 
     init {
