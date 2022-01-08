@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:background="#47AB2F"
-    tools:context=".WeatherFragment">
+    tools:context=".ui.weather.WeatherFragment">
 
     <TextView
         android:id="@+id/temp"
