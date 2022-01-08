@@ -8,7 +8,7 @@ import com.mobile.weatherappdvt.utils.MockResponseFileReader
 class FakeCurrentWeatherRepository(private val path: String): WeatherRepository {
     override val currentWeather =  MutableLiveData<CurrentWeatherInfo>()
 
-    override fun getCurrentWeather() {
+    override fun getCurrentWeather(cityName: String) {
         val reader = MockResponseFileReader(path)
         val gson = Gson()
         val currentWeatherInfo = gson.fromJson(reader.content, CurrentWeatherInfo::class.java)

@@ -28,6 +28,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    buildFeatures {
+        dataBinding true
+    }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -44,6 +49,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation "com.google.dagger:hilt-android:2.38.1"
+    implementation 'androidx.fragment:fragment-ktx:1.4.0'
+    implementation 'androidx.activity:activity-ktx:1.4.0'
     kapt "com.google.dagger:hilt-compiler:2.38.1"
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.3'

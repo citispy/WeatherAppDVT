@@ -4,18 +4,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.mobile.weatherappdvt.model.CurrentWeatherInfo
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class WeatherViewModel constructor(repository: WeatherRepository): ViewModel() {
+@HiltViewModel
+class WeatherViewModel @Inject constructor(repository: WeatherRepository): ViewModel() {
 
     private val currentWeatherInfo: LiveData<CurrentWeatherInfo> = repository.currentWeather
-    val currentTemp: LiveData<Double?> = Transformations.map(currentWeatherInfo) {
-        it.main?.temp
+    val currentTemp: LiveData<String?> = Transformations.map(currentWeatherInfo) {
+        it.main?.temp?.toInt().toString()
     }
-    val minTemp: LiveData<Double?> = Transformations.map(currentWeatherInfo) {
-        it.main?.tempMin
+    val minTemp: LiveData<String?> = Transformations.map(currentWeatherInfo) {
+        it.main?.tempMin?.toInt().toString()
     }
-    val maxTemp: LiveData<Double?> = Transformations.map(currentWeatherInfo) {
-        it.main?.tempMax
+    val maxTemp: LiveData<String?> = Transformations.map(currentWeatherInfo) {
+        it.main?.tempMax?.toInt().toString()
     }
     val weatherDescription: LiveData<String?> = Transformations.map(currentWeatherInfo) {
         it.weather?.get(0)?.main
@@ -26,6 +29,6 @@ class WeatherViewModel constructor(repository: WeatherRepository): ViewModel() {
     }
 
     init {
-        repository.getCurrentWeather()
+        repository.getCurrentWeather("Cape Town")
     }
 }
