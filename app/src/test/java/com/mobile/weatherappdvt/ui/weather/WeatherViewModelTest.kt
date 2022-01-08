@@ -3,6 +3,7 @@ package com.mobile.weatherappdvt.ui.weather
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.mobile.weatherappdvt.R
 import junit.framework.TestCase
 import org.junit.Before
 import org.junit.Rule
@@ -21,8 +22,8 @@ class WeatherViewModelTest : TestCase() {
     @Test
     fun `check current temp value for successful response`() {
         val viewModel = WeatherViewModel(repositoryForSuccess)
-        val observer: Observer<Double?> = Observer {
-            assert(it == 301.97)
+        val observer: Observer<String?> = Observer {
+            assert(it.equals("32"))
         }
         viewModel.currentTemp.observeForever(observer)
         viewModel.currentTemp.removeObserver(observer)
@@ -31,7 +32,7 @@ class WeatherViewModelTest : TestCase() {
     @Test
     fun `check current temp value for failed response`() {
         val viewModel = WeatherViewModel(repositoryForFailure)
-        val observer: Observer<Double?> = Observer {
+        val observer: Observer<String?> = Observer {
             assert(it == null)
         }
         viewModel.currentTemp.observeForever(observer)
@@ -41,8 +42,8 @@ class WeatherViewModelTest : TestCase() {
     @Test
     fun `check min temp value for successful response`() {
         val viewModel = WeatherViewModel(repositoryForSuccess)
-        val observer: Observer<Double?> = Observer {
-            assert(it == 300.43)
+        val observer: Observer<String?> = Observer {
+            assert(it.equals("30"))
         }
         viewModel.minTemp.observeForever(observer)
         viewModel.minTemp.removeObserver(observer)
@@ -51,7 +52,7 @@ class WeatherViewModelTest : TestCase() {
     @Test
     fun `check min temp value for failed response`() {
         val viewModel = WeatherViewModel(repositoryForFailure)
-        val observer: Observer<Double?> = Observer {
+        val observer: Observer<String?> = Observer {
             assert(it == null)
         }
         viewModel.minTemp.observeForever(observer)
@@ -61,8 +62,8 @@ class WeatherViewModelTest : TestCase() {
     @Test
     fun `check max temp value for successful response`() {
         val viewModel = WeatherViewModel(repositoryForSuccess)
-        val observer: Observer<Double?> = Observer {
-            assert(it == 304.38)
+        val observer: Observer<String?> = Observer {
+            assert(it.equals("33"))
         }
         viewModel.maxTemp.observeForever(observer)
         viewModel.maxTemp.removeObserver(observer)
@@ -71,7 +72,7 @@ class WeatherViewModelTest : TestCase() {
     @Test
     fun `check max temp value for failed response`() {
         val viewModel = WeatherViewModel(repositoryForFailure)
-        val observer: Observer<Double?> = Observer {
+        val observer: Observer<String?> = Observer {
             assert(it == null)
         }
         viewModel.maxTemp.observeForever(observer)
@@ -116,5 +117,45 @@ class WeatherViewModelTest : TestCase() {
         }
         viewModel.errorMessage.observeForever(observer)
         viewModel.errorMessage.removeObserver(observer)
+    }
+
+    @Test
+    fun `check image drawable value for successful response`() {
+        val viewModel = WeatherViewModel(repositoryForSuccess)
+        val observer: Observer<Int?> = Observer {
+            assert(it == R.drawable.forest_sunny)
+        }
+        viewModel.imageDrawable.observeForever(observer)
+        viewModel.imageDrawable.removeObserver(observer)
+    }
+
+    @Test
+    fun `check image drawable value for failed response`() {
+        val viewModel = WeatherViewModel(repositoryForFailure)
+        val observer: Observer<Int?> = Observer {
+            assert(it == null)
+        }
+        viewModel.imageDrawable.observeForever(observer)
+        viewModel.imageDrawable.removeObserver(observer)
+    }
+
+    @Test
+    fun `check background color value for successful response`() {
+        val viewModel = WeatherViewModel(repositoryForSuccess)
+        val observer: Observer<Int?> = Observer {
+            assert(it == R.color.clear_green)
+        }
+        viewModel.backgroundColor.observeForever(observer)
+        viewModel.backgroundColor.removeObserver(observer)
+    }
+
+    @Test
+    fun `check background color value for failed response`() {
+        val viewModel = WeatherViewModel(repositoryForFailure)
+        val observer: Observer<Int?> = Observer {
+            assert(it == null)
+        }
+        viewModel.backgroundColor.observeForever(observer)
+        viewModel.backgroundColor.removeObserver(observer)
     }
 }
