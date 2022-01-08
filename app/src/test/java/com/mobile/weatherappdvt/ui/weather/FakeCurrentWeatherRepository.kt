@@ -3,6 +3,7 @@ package com.mobile.weatherappdvt.ui.weather
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.mobile.weatherappdvt.model.CurrentWeatherInfo
+import com.mobile.weatherappdvt.ui.weather.repository.WeatherRepository
 import com.mobile.weatherappdvt.utils.MockResponseFileReader
 
 class FakeCurrentWeatherRepository(private val path: String): WeatherRepository {
@@ -17,6 +18,6 @@ class FakeCurrentWeatherRepository(private val path: String): WeatherRepository 
 
     companion object {
         fun forSuccessfulResponse(): FakeCurrentWeatherRepository = FakeCurrentWeatherRepository("successful_current_weather_response.json")
-        fun forFailedResponse(): FakeCurrentWeatherRepository = FakeCurrentWeatherRepository("failed_current_weather_response.json")
+        fun forFailedResponse(): FakeCurrentWeatherRepository = FakeCurrentWeatherRepository("failed_response.json")
     }
 }

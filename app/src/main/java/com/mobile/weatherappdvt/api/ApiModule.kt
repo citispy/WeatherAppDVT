@@ -1,7 +1,7 @@
 package com.mobile.weatherappdvt.api
 
-import com.mobile.weatherappdvt.ui.weather.CurrentWeatherRepository
-import com.mobile.weatherappdvt.ui.weather.WeatherRepository
+import com.mobile.weatherappdvt.ui.weather.repository.CurrentWeatherRepository
+import com.mobile.weatherappdvt.ui.weather.repository.WeatherRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

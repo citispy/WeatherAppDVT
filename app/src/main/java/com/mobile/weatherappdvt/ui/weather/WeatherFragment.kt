@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import com.mobile.weatherappdvt.R
 import com.mobile.weatherappdvt.databinding.FragmentWeatherBinding
+import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

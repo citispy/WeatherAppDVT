@@ -1,10 +1,11 @@
-package com.mobile.weatherappdvt.ui.weather
+package com.mobile.weatherappdvt.ui.weather.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.mobile.weatherappdvt.R
 import com.mobile.weatherappdvt.model.CurrentWeatherInfo
+import com.mobile.weatherappdvt.ui.weather.repository.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
