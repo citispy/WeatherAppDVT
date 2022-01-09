@@ -1,9 +1,11 @@
 package com.mobile.weatherappdvt.ui.weather.repository
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.mobile.weatherappdvt.model.CurrentWeatherInfo
 
 interface WeatherRepository {
-    val currentWeather: MutableLiveData<CurrentWeatherInfo>
+    val currentWeather: LiveData<CurrentWeatherInfo>
+    val isLoading: LiveData<Boolean>
     fun getCurrentWeather(lat: Double, lon: Double)
 }

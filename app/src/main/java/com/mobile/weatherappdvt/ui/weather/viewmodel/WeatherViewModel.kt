@@ -16,7 +16,9 @@ private const val CLOUDS = "Clouds"
 @HiltViewModel
 class WeatherViewModel @Inject constructor(private val repository: WeatherRepository): ViewModel() {
 
-    private val currentWeatherInfo: LiveData<CurrentWeatherInfo> = repository.currentWeather
+    val currentWeatherInfo: LiveData<CurrentWeatherInfo> = repository.currentWeather
+
+    val isLoading: LiveData<Boolean> = repository.isLoading
 
     val currentTemp: LiveData<String?> = Transformations.map(currentWeatherInfo) {
         it.main?.temp?.toInt()?.toString()

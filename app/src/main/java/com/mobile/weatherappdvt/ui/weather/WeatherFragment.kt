@@ -57,6 +57,12 @@ class WeatherFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
 
     private fun observeViewModels() {
+        weatherViewModel.isLoading.observe(this) {
+            binding.currentWeatherProgress.visibility = if(it) View.VISIBLE else View.GONE
+            binding.currentWeatherContainer.visibility = if(it) View.GONE else View.VISIBLE
+            binding.divider.visibility = if(it) View.GONE else View.VISIBLE
+        }
+
         weatherViewModel.currentTemp.observe(this) {
             setCurrentTemp(it)
         }
@@ -104,14 +110,18 @@ class WeatherFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         val locationManager = context!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val location: Location? = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER)
         Log.d(WeatherFragment::javaClass.name, "latitude: " + location?.latitude + " longitude: " + location?.longitude)
-        getWeatherInfo(location)
+        getWeatherInfoAttempt(location)
     }
 
-    private fun getWeatherInfo(location: Location?) {
-        if(location == null) {
-            return
+    private fun getWeatherInfoAttempt(location: Location?) {
+        when {
+            location == null -> return
+            weatherViewModel.currentWeatherInfo.value != null -> return
+            else -> getWeatherInfo(location)
         }
+    }
 
+    private fun getWeatherInfo(location: Location) {
         weatherViewModel.getCurrentWeather(location.longitude, location.latitude)
         forecastViewModel.getForecast(location.longitude, location.latitude)
     }
