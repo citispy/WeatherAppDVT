@@ -1,8 +1,11 @@
 package com.mobile.weatherappdvt.util
 
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.TestCase
 import org.junit.Test
+import org.junit.runner.RunWith
 
+@RunWith(AndroidJUnit4::class)
 class DateUtilsTest : TestCase() {
 
     @Test
@@ -30,5 +33,14 @@ class DateUtilsTest : TestCase() {
 
         val noDate = DateUtils.getDayForDate("")
         assert(noDate == null)
+    }
+
+    @Test
+    fun testIsNotToday() {
+        var notToday = DateUtils.isNotToday("2022-01-09 21:00:00")
+        assert(!notToday)
+
+        notToday = DateUtils.isNotToday("2022-01-10 21:00:00")
+        assert(notToday)
     }
 }
