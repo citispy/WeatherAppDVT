@@ -26,6 +26,10 @@ class ForecastViewModel @Inject constructor(repository: ForecastRepository): Vie
         list
     }
 
+    val message = Transformations.map(fiveDayForecast) {
+        it.message
+    }
+
     private fun populateList(it: FiveDayForecast, list: ArrayList<ForecastListItem>) {
         val forecasts = it.list
         if (forecasts != null) {
