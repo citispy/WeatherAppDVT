@@ -14,7 +14,7 @@ private const val CLEAR = "Clear"
 private const val CLOUDS = "Clouds"
 
 @HiltViewModel
-class WeatherViewModel @Inject constructor(repository: WeatherRepository): ViewModel() {
+class WeatherViewModel @Inject constructor(private val repository: WeatherRepository): ViewModel() {
 
     private val currentWeatherInfo: LiveData<CurrentWeatherInfo> = repository.currentWeather
 
@@ -56,7 +56,7 @@ class WeatherViewModel @Inject constructor(repository: WeatherRepository): ViewM
         }
     }
 
-    init {
-        repository.getCurrentWeather("Cape Town")
+    fun getCurrentWeather(lat: Double, lon: Double) {
+        repository.getCurrentWeather(lat, lon)
     }
 }

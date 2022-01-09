@@ -24,6 +24,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
+private const val LOCATION_PERMISSION_REQUEST_CODE = 0
+
 @AndroidEntryPoint
 class WeatherFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
@@ -90,8 +92,8 @@ class WeatherFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         } else {
             EasyPermissions.requestPermissions(
                 this,
-                "Accept permissions now!",
-                1,
+                getString(R.string.location_permissions_required),
+                LOCATION_PERMISSION_REQUEST_CODE,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             )
         }
@@ -102,6 +104,16 @@ class WeatherFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         val locationManager = context!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val location: Location? = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER)
         Log.d(WeatherFragment::javaClass.name, "latitude: " + location?.latitude + " longitude: " + location?.longitude)
+        getWeatherInfo(location)
+    }
+
+    private fun getWeatherInfo(location: Location?) {
+        if(location == null) {
+            return
+        }
+
+        weatherViewModel.getCurrentWeather(location.longitude, location.latitude)
+        forecastViewModel.getForecast(location.longitude, location.latitude)
     }
 
     private fun setCurrentTemp(it: String?) {

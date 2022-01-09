@@ -16,7 +16,7 @@ private const val CLEAR = "Clear"
 private const val CLOUDS = "Clouds"
 
 @HiltViewModel
-class ForecastViewModel @Inject constructor(repository: ForecastRepository): ViewModel() {
+class ForecastViewModel @Inject constructor(private val repository: ForecastRepository): ViewModel() {
 
     private val fiveDayForecast: LiveData<FiveDayForecast> = repository.fiveDayForecast
 
@@ -81,7 +81,7 @@ class ForecastViewModel @Inject constructor(repository: ForecastRepository): Vie
         }
     }
 
-    init {
-        repository.getForecast("Cape Town")
+    fun getForecast(lat: Double, lon: Double) {
+        repository.getForecast(lat, lon)
     }
 }

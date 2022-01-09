@@ -9,7 +9,7 @@ import com.mobile.weatherappdvt.util.MockResponseFileReader
 class FakeForecastRepository(private val path: String): ForecastRepository {
     override val fiveDayForecast = MutableLiveData<FiveDayForecast>()
 
-    override fun getForecast(cityName: String) {
+    override fun getForecast(lat: Double, lon: Double) {
         val reader = MockResponseFileReader(path)
         val gson = Gson()
         val forecast = gson.fromJson(reader.content, FiveDayForecast::class.java)

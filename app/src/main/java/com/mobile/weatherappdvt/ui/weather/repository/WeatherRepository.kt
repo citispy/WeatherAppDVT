@@ -5,5 +5,5 @@ import com.mobile.weatherappdvt.model.CurrentWeatherInfo
 
 interface WeatherRepository {
     val currentWeather: MutableLiveData<CurrentWeatherInfo>
-    fun getCurrentWeather(cityName: String)
+    fun getCurrentWeather(lat: Double, lon: Double)
 }

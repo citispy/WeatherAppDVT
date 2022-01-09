@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">WeatherAppDVT</string>
     <string name="temp"> %1$s\u00B0</string>
+    <string name="location_permissions_required">You need to grant location permissions to use this app.</string>
 </resources>

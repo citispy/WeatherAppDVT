@@ -9,7 +9,7 @@ import javax.inject.Inject
 class ForecastWeatherRepository @Inject constructor(private val forecastRequestManager: ForecastRequestManager): ForecastRepository {
     override val fiveDayForecast: LiveData<FiveDayForecast> =  forecastRequestManager.fiveDayForecast
 
-    override fun getForecast(cityName: String) {
-        forecastRequestManager.getForecast(cityName)
+    override fun getForecast(lat: Double, lon: Double) {
+        forecastRequestManager.getForecast(lat, lon)
     }
 }

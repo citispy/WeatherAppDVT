@@ -12,8 +12,8 @@ class WeatherRequestManager @Inject constructor(private val apiInterface: ApiInt
 
     val currentWeatherInfo = MutableLiveData<CurrentWeatherInfo>()
 
-    fun getCurrentWeatherInfo(cityName: String) {
-        apiInterface.getCurrentWeatherInfo(cityName).enqueue(object : Callback<CurrentWeatherInfo> {
+    fun getCurrentWeatherInfo(lat: Double, lon: Double) {
+        apiInterface.getCurrentWeatherInfo(lat, lon).enqueue(object : Callback<CurrentWeatherInfo> {
             override fun onResponse(call: Call<CurrentWeatherInfo>, response: Response<CurrentWeatherInfo>) {
                 currentWeatherInfo.value = response.body()
             }
