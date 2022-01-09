@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mobile.weatherappdvt.R
 import com.mobile.weatherappdvt.databinding.FragmentWeatherBinding
 import com.mobile.weatherappdvt.ui.weather.viewmodel.ForecastViewModel
@@ -20,17 +21,27 @@ class WeatherFragment : Fragment() {
     private val weatherViewModel: WeatherViewModel by viewModels()
     private val forecastViewModel: ForecastViewModel by viewModels()
     private lateinit var binding: FragmentWeatherBinding
+    private lateinit var adapter: ForecastAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_weather, container, false)
+        adapter = ForecastAdapter(requireContext())
 
+        initForecastsList()
         observeViewModels()
 
         return binding.root
     }
+
+    private fun initForecastsList() {
+        val forecastList = binding.forecastList
+        forecastList.layoutManager = LinearLayoutManager(requireContext())
+        forecastList.adapter = adapter
+    }
+
 
     private fun observeViewModels() {
         weatherViewModel.currentTemp.observe(this) {
@@ -58,7 +69,7 @@ class WeatherFragment : Fragment() {
         }
 
         forecastViewModel.forecast.observe(this) {
-            it.size
+            adapter.updateForecasts(it)
         }
     }
 

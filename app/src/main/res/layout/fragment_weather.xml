@@ -132,6 +132,7 @@
             app:layout_constraintTop_toBottomOf="@+id/min" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/forecastList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/divider"
