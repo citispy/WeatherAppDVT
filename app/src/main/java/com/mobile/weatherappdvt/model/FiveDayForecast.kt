@@ -7,7 +7,7 @@ data class FiveDayForecast(
     @SerializedName("cod")
     val cod: String? = null,
     @SerializedName("list")
-    val list: List<Main>? = null,
+    val list: List<Forecast>? = null,
     @SerializedName("message")
     val message: Int? = null,
     @SerializedName("message")
