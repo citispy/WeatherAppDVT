@@ -1,6 +1,12 @@
 package com.mobile.weatherappdvt.ui.weather
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +19,13 @@ import com.mobile.weatherappdvt.R
 import com.mobile.weatherappdvt.databinding.FragmentWeatherBinding
 import com.mobile.weatherappdvt.ui.weather.viewmodel.ForecastViewModel
 import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel
+import com.mobile.weatherappdvt.util.TrackingUtils
 import dagger.hilt.android.AndroidEntryPoint
+import pub.devrel.easypermissions.AppSettingsDialog
+import pub.devrel.easypermissions.EasyPermissions
 
 @AndroidEntryPoint
-class WeatherFragment : Fragment() {
+class WeatherFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private val weatherViewModel: WeatherViewModel by viewModels()
     private val forecastViewModel: ForecastViewModel by viewModels()
@@ -25,13 +34,15 @@ class WeatherFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View {
+        savedInstanceState: Bundle?
+    ): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_weather, container, false)
         adapter = ForecastAdapter(requireContext())
 
         initForecastsList()
         observeViewModels()
+        requestLocationPermissions()
 
         return binding.root
     }
@@ -73,6 +84,26 @@ class WeatherFragment : Fragment() {
         }
     }
 
+    private fun requestLocationPermissions() {
+        if (TrackingUtils.hasLocationPermissions(requireContext())) {
+            getLastKnownLocation()
+        } else {
+            EasyPermissions.requestPermissions(
+                this,
+                "Accept permissions now!",
+                1,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLastKnownLocation() {
+        val locationManager = context!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val location: Location? = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER)
+        Log.d(WeatherFragment::javaClass.name, "latitude: " + location?.latitude + " longitude: " + location?.longitude)
+    }
+
     private fun setCurrentTemp(it: String?) {
         val temp = convertToTempFormat(it)
         binding.temp.text = temp
@@ -102,4 +133,19 @@ class WeatherFragment : Fragment() {
     }
 
     private fun convertToTempFormat(it: String?): String = getString(R.string.temp, it)
+
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+        getLastKnownLocation()
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            AppSettingsDialog.Builder(this).build().show()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
 }
