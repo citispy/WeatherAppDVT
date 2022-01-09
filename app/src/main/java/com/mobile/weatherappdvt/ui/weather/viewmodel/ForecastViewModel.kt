@@ -20,7 +20,7 @@ class ForecastViewModel @Inject constructor(repository: ForecastRepository): Vie
 
     private val fiveDayForecast: LiveData<FiveDayForecast> = repository.fiveDayForecast
 
-    val temp: LiveData<ArrayList<ForecastListItem>> = Transformations.map(fiveDayForecast) {
+    val forecast: LiveData<ArrayList<ForecastListItem>> = Transformations.map(fiveDayForecast) {
         val list: ArrayList<ForecastListItem> = ArrayList()
         populateList(it, list)
         list
@@ -31,18 +31,40 @@ class ForecastViewModel @Inject constructor(repository: ForecastRepository): Vie
         if (forecasts != null) {
             for (i in forecasts.indices) {
                 val forecast = forecasts[i]
+
+                //Don't add forecast for today
+                if (!DateUtils.isNotToday(forecast.dtTxt)) {
+                    continue
+                }
+
                 val main = forecast.main
 
                 val temp = main?.temp?.toInt()?.toString()
                 val day = DateUtils.getDayForDate(forecast.dtTxt)
-                val weatherDescription = forecast.weather?.get(0)?.description
+                val weatherDescription = forecast.weather?.get(0)?.main
                 val imageDrawable = getImageDrawable(weatherDescription)
 
                 if (temp != null && day != null && imageDrawable != null) {
                     val item = ForecastListItem(temp, day, imageDrawable)
-                    list.add(item)
+                    addHighestTempPerDay(list, item)
                 }
             }
+        }
+    }
+
+    private fun addHighestTempPerDay(list: ArrayList<ForecastListItem>, newItem: ForecastListItem) {
+        if (list.isEmpty()) {
+            list.add(newItem)
+            return
+        }
+
+        val lastListItem: ForecastListItem = list.last()
+        if (lastListItem.day == newItem.day) {
+            if (lastListItem.temp <= newItem.temp) {
+                list[list.lastIndex] = newItem
+            }
+        } else {
+            list.add(newItem)
         }
     }
 
