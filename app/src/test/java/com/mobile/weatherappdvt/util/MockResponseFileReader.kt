@@ -1,4 +1,4 @@
-package com.mobile.weatherappdvt.utils
+package com.mobile.weatherappdvt.util
 
 import java.io.InputStreamReader
 

@@ -4,12 +4,12 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.mobile.weatherappdvt.model.FiveDayForecast
 import com.mobile.weatherappdvt.ui.weather.repository.ForecastRepository
-import com.mobile.weatherappdvt.utils.MockResponseFileReader
+import com.mobile.weatherappdvt.util.MockResponseFileReader
 
 class FakeForecastRepository(private val path: String): ForecastRepository {
     override val fiveDayForecast = MutableLiveData<FiveDayForecast>()
 
-    override fun getForecast() {
+    override fun getForecast(cityName: String) {
         val reader = MockResponseFileReader(path)
         val gson = Gson()
         val forecast = gson.fromJson(reader.content, FiveDayForecast::class.java)

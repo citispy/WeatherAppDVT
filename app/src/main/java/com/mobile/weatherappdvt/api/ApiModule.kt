@@ -1,5 +1,6 @@
 package com.mobile.weatherappdvt.api
 
+import com.mobile.weatherappdvt.ui.weather.api.ForecastRequestManager
 import com.mobile.weatherappdvt.ui.weather.api.WeatherRequestManager
 import com.mobile.weatherappdvt.ui.weather.repository.CurrentWeatherRepository
 import com.mobile.weatherappdvt.ui.weather.repository.ForecastRepository
@@ -61,11 +62,15 @@ object ApiModule {
 
     @Singleton
     @Provides
+    fun provideForecastRequestManager(apiInterface: ApiInterface): ForecastRequestManager = ForecastRequestManager(apiInterface)
+
+    @Singleton
+    @Provides
     fun providesWeatherRepository(webRequestRequestManager: WeatherRequestManager) =
         CurrentWeatherRepository(webRequestRequestManager) as WeatherRepository
 
     @Singleton
     @Provides
-    fun providesForecastRepository() =
-        ForecastWeatherRepository() as ForecastRepository
+    fun providesForecastRepository(forecastRequestManager: ForecastRequestManager) =
+        ForecastWeatherRepository(forecastRequestManager) as ForecastRepository
 }

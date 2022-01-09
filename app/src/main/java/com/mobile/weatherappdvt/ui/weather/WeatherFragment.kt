@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import com.mobile.weatherappdvt.R
 import com.mobile.weatherappdvt.databinding.FragmentWeatherBinding
+import com.mobile.weatherappdvt.ui.weather.viewmodel.ForecastViewModel
 import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,6 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class WeatherFragment : Fragment() {
 
     private val weatherViewModel: WeatherViewModel by viewModels()
+    private val forecastViewModel: ForecastViewModel by viewModels()
     private lateinit var binding: FragmentWeatherBinding
 
     override fun onCreateView(
@@ -53,6 +55,10 @@ class WeatherFragment : Fragment() {
 
         weatherViewModel.backgroundColor.observe(this) {
             setBackgroundColor(it)
+        }
+
+        forecastViewModel.forecast.observe(this) {
+            it.size
         }
     }
 

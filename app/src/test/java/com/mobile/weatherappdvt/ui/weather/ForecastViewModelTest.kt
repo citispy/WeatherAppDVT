@@ -35,9 +35,9 @@ class ForecastViewModelTest : TestCase() {
         val viewModel = ForecastViewModel(repositoryForSuccess)
         val observer: Observer<ArrayList<ForecastListItem>?> = Observer {
             val item1 = it?.get(0)
-            assert(item1?.temp == "22" && item1.day == "Monday" && item1.imageDrawable == 2131165280)
+            assert(item1?.temp == "22" && item1.day == "Monday" && item1.imageDrawable == 2131165330)
             val item2 = it?.get(1)
-            assert(item2?.temp == "20" && item2.day == "Tuesday" && item2.imageDrawable == 2131165330)
+            assert(item2?.temp == "20" && item2.day == "Tuesday" && item2.imageDrawable == 2131165331)
             val item3 = it?.get(2)
             assert(item3?.temp == "25" && item3.day == "Wednesday" && item3.imageDrawable == 2131165280)
             val item4 = it?.get(3)

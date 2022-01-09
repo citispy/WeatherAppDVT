@@ -64,7 +64,7 @@ class ForecastViewModel @Inject constructor(repository: ForecastRepository): Vie
 
         val lastListItem: ForecastListItem = list.last()
         if (lastListItem.day == newItem.day) {
-            if (lastListItem.temp <= newItem.temp) {
+            if (lastListItem.temp < newItem.temp) {
                 list[list.lastIndex] = newItem
             }
         } else {
@@ -82,6 +82,6 @@ class ForecastViewModel @Inject constructor(repository: ForecastRepository): Vie
     }
 
     init {
-        repository.getForecast()
+        repository.getForecast("Cape Town")
     }
 }
