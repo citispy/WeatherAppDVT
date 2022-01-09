@@ -1,13 +1,14 @@
-package com.mobile.weatherappdvt.api
+package com.mobile.weatherappdvt.ui.weather.api
 
 import androidx.lifecycle.MutableLiveData
+import com.mobile.weatherappdvt.api.ApiInterface
 import com.mobile.weatherappdvt.model.CurrentWeatherInfo
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
 
-class WebRequestManager @Inject constructor(private val apiInterface: ApiInterface) {
+class WeatherRequestManager @Inject constructor(private val apiInterface: ApiInterface) {
 
     val currentWeatherInfo = MutableLiveData<CurrentWeatherInfo>()
 
