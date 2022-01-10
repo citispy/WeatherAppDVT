@@ -8,4 +8,6 @@
     <string name="min">min</string>
     <string name="location_not_found_select_location_manually">Location not found. Select location manually?</string>
     <string name="set">set</string>
+    <string name="you_don_t_have_the_required_permissions">You don\'t have the required permissions</string>
+    <string name="enable">enable</string>
 </resources>

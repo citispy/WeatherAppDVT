@@ -58,7 +58,8 @@
                 app:layout_constraintBottom_toTopOf="@+id/divider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible">
 
                 <TextView
                     android:id="@+id/temp"
@@ -77,9 +78,9 @@
                 <TextView
                     android:id="@+id/weather_description"
                     android:layout_width="match_parent"
-                    android:gravity="center"
                     android:layout_height="wrap_content"
                     android:elevation="1dp"
+                    android:gravity="center"
                     android:textAllCaps="true"
                     android:textAppearance="?textAppearanceHeadline2"
                     android:textColor="@color/white"
@@ -179,7 +180,8 @@
                 android:layout_marginTop="8dp"
                 android:background="@color/white"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@+id/currentWeatherContainer" />
+                app:layout_constraintTop_toBottomOf="@+id/currentWeatherContainer"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/locationNotFound"
@@ -189,19 +191,19 @@
                 android:text="@string/location_not_found_select_location_manually"
                 android:textAppearance="?textAppearanceBody1"
                 android:textColor="@color/white"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:visibility="gone"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/setLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/set"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/locationNotFound"
-                android:visibility="gone"/>
+                app:layout_constraintTop_toBottomOf="@+id/locationNotFound" />
 
             <ProgressBar
                 android:id="@+id/forecastProgress"
@@ -219,7 +221,8 @@
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider"
-                tools:listitem="@layout/day_forecast_list_item" />
+                tools:listitem="@layout/day_forecast_list_item"
+                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

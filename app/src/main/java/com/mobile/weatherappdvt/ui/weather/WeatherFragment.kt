@@ -1,34 +1,33 @@
 package com.mobile.weatherappdvt.ui.weather
 
-import android.Manifest
 import android.location.Location
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mobile.weatherappdvt.R
 import com.mobile.weatherappdvt.databinding.FragmentWeatherBinding
+import com.mobile.weatherappdvt.ui.main.PermissionsViewModel
 import com.mobile.weatherappdvt.ui.weather.viewmodel.ForecastViewModel
 import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel
 import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel.*
 import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel.UiState.*
 import com.mobile.weatherappdvt.util.TrackingUtils
 import dagger.hilt.android.AndroidEntryPoint
-import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
-private const val LOCATION_PERMISSION_REQUEST_CODE = 0
-
 @AndroidEntryPoint
-class WeatherFragment : Fragment(), EasyPermissions.PermissionCallbacks {
+class WeatherFragment : Fragment() {
 
     private val weatherViewModel: WeatherViewModel by viewModels()
     private val forecastViewModel: ForecastViewModel by viewModels()
+    private val permissionsViewModel: PermissionsViewModel by activityViewModels()
     private lateinit var binding: FragmentWeatherBinding
     private lateinit var adapter: ForecastAdapter
 
@@ -52,7 +51,7 @@ class WeatherFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     override fun onStart() {
         super.onStart()
-        checkLocationPermissions()
+        permissionsViewModel.requestLocationPermissions()
     }
 
     private fun initForecastsList() {
@@ -62,6 +61,12 @@ class WeatherFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     }
 
     private fun observeViewModels() {
+        observerWeatherViewModel()
+        observeForecastViewModel()
+        observePermissionsViewModel()
+    }
+
+    private fun observerWeatherViewModel() {
         weatherViewModel.errorMessage.observe(this) {
             setErrorMessage(it)
         }
@@ -93,7 +98,9 @@ class WeatherFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         weatherViewModel.backgroundColor.observe(this) {
             setBackgroundColor(it)
         }
+    }
 
+    private fun observeForecastViewModel() {
         forecastViewModel.forecast.observe(this) {
             adapter.updateForecasts(it)
         }
@@ -104,36 +111,11 @@ class WeatherFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         }
     }
 
-    private fun checkLocationPermissions() {
-        if (TrackingUtils.hasLocationPermissions(requireContext())) {
+    private fun observePermissionsViewModel() {
+        permissionsViewModel.locationPermissionsGranted.observe(this) {
             val location = TrackingUtils.getLastKnownLocation(requireContext())
             getWeatherAttempt(location)
-        } else {
-            EasyPermissions.requestPermissions(
-                this,
-                getString(R.string.location_permissions_required),
-                LOCATION_PERMISSION_REQUEST_CODE,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
         }
-    }
-
-    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            AppSettingsDialog.Builder(this).build().show()
-        } else {
-            checkLocationPermissions()
-        }
-    }
-
-    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-        val location = TrackingUtils.getLastKnownLocation(requireContext())
-        getWeatherAttempt(location)
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
     private fun getWeatherAttempt(location: Location?) {
