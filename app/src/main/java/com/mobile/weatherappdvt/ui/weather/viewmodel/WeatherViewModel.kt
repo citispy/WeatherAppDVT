@@ -1,9 +1,7 @@
 package com.mobile.weatherappdvt.ui.weather.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import android.location.Location
+import androidx.lifecycle.*
 import com.mobile.weatherappdvt.R
 import com.mobile.weatherappdvt.model.CurrentWeatherInfo
 import com.mobile.weatherappdvt.ui.weather.repository.WeatherRepository
@@ -42,6 +40,8 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
         it.errorMessage
     }
 
+    val location = MutableLiveData<Location?>()
+
     val imageDrawable: LiveData<Int?> = Transformations.map(currentWeatherInfo) {
             when(it.weather?.get(0)?.main) {
                 RAIN -> R.drawable.forest_rainy
@@ -64,11 +64,24 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
         repository.getCurrentWeather(lat, lon)
     }
 
-    fun haveAllWeatherInfo() : Boolean {
+    private fun haveAllWeatherInfo() : Boolean {
         return currentTemp.value != null &&
                 minTemp.value !== null &&
                 maxTemp.value != null &&
                 weatherDescription.value != null
+    }
+
+    fun setLiveLocation(location: Location?) {
+        when {
+            haveAllWeatherInfo() -> return
+            else -> {
+                setLocation(location)
+            }
+        }
+    }
+
+    private fun setLocation(newLocation: Location?) {
+        location.value = newLocation
     }
 
     init {
@@ -80,14 +93,24 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
 
         uiState.addSource(errorMessage) {
             if (it == null) {
-                uiState.value = UiState.SUCCESSFULLY_RETRIEVED_DATA
+                setUiState(UiState.SUCCESSFULLY_RETRIEVED_DATA)
             } else {
-                uiState.value = UiState.ERROR_MESSAGE_RECEIVED
+                setUiState(UiState.ERROR_MESSAGE_RECEIVED)
+            }
+        }
+
+        uiState.addSource(location) {
+            if (location.value == null) {
+                setUiState(UiState.NO_LOCATION_FOUND)
             }
         }
     }
 
-    enum class UiState() {
-        LOADING, ERROR_MESSAGE_RECEIVED, SUCCESSFULLY_RETRIEVED_DATA
+    private fun setUiState(state: UiState) {
+        uiState.value = state
+    }
+
+    enum class UiState {
+        LOADING, ERROR_MESSAGE_RECEIVED, SUCCESSFULLY_RETRIEVED_DATA, NO_LOCATION_FOUND
     }
 }

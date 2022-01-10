@@ -20,7 +20,6 @@ import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel.*
 import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel.UiState.*
 import com.mobile.weatherappdvt.util.TrackingUtils
 import dagger.hilt.android.AndroidEntryPoint
-import pub.devrel.easypermissions.EasyPermissions
 
 @AndroidEntryPoint
 class WeatherFragment : Fragment() {
@@ -38,7 +37,7 @@ class WeatherFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_weather, container, false)
         binding.retryWeather.setOnClickListener {
             val location = TrackingUtils.getLastKnownLocation(requireContext())
-            getWeatherAttempt(location)
+            weatherViewModel.setLiveLocation(location)
         }
 
         adapter = ForecastAdapter(requireContext())
@@ -98,6 +97,12 @@ class WeatherFragment : Fragment() {
         weatherViewModel.backgroundColor.observe(this) {
             setBackgroundColor(it)
         }
+
+        weatherViewModel.location.observe(this) {
+            if (it != null) {
+                getWeatherFor(it)
+            }
+        }
     }
 
     private fun observeForecastViewModel() {
@@ -114,25 +119,8 @@ class WeatherFragment : Fragment() {
     private fun observePermissionsViewModel() {
         permissionsViewModel.locationPermissionsGranted.observe(this) {
             val location = TrackingUtils.getLastKnownLocation(requireContext())
-            getWeatherAttempt(location)
+            weatherViewModel.setLiveLocation(location)
         }
-    }
-
-    private fun getWeatherAttempt(location: Location?) {
-        when {
-            location == null -> setNoLocationViewsVisible(true)
-            weatherViewModel.haveAllWeatherInfo() -> return
-            else -> {
-                getWeatherFor(location)
-                setNoLocationViewsVisible(false)
-            }
-        }
-    }
-
-    private fun setNoLocationViewsVisible(visible: Boolean) {
-        val visibility = if(visible) View.VISIBLE else View.GONE
-        binding.locationNotFound.visibility = visibility
-        binding.setLocation.visibility = visibility
     }
 
     private fun getWeatherFor(location: Location) {
@@ -157,6 +145,10 @@ class WeatherFragment : Fragment() {
             if (it == SUCCESSFULLY_RETRIEVED_DATA) View.VISIBLE else View.GONE
         binding.currentWeatherProgress.visibility =
             if (it == LOADING) View.VISIBLE else View.GONE
+        binding.locationNotFound.visibility =
+            if(it == NO_LOCATION_FOUND) View.VISIBLE else View.GONE
+        binding.setLocation.visibility =
+            if(it == NO_LOCATION_FOUND) View.VISIBLE else View.GONE
     }
 
     private fun setCurrentTemp(it: String?) {
