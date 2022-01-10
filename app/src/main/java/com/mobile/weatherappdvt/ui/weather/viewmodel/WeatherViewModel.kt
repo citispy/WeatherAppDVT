@@ -7,6 +7,7 @@ import com.mobile.weatherappdvt.model.CurrentWeatherInfo
 import com.mobile.weatherappdvt.ui.weather.repository.WeatherRepository
 import com.mobile.weatherappdvt.util.Constants.CLEAR
 import com.mobile.weatherappdvt.util.Constants.CLOUDS
+import com.mobile.weatherappdvt.util.Constants.DEGREE_SYMBOL
 import com.mobile.weatherappdvt.util.Constants.RAIN
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -21,15 +22,15 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
     val uiState = MediatorLiveData<UiState>()
 
     val currentTemp: LiveData<String?> = Transformations.map(currentWeatherInfo) {
-        it.main?.temp?.toInt()?.toString()
+        it.main?.temp?.toInt()?.toString() + DEGREE_SYMBOL
     }
 
     val minTemp: LiveData<String?> = Transformations.map(currentWeatherInfo) {
-        it.main?.tempMin?.toInt()?.toString()
+        it.main?.tempMin?.toInt()?.toString() + DEGREE_SYMBOL
     }
 
     val maxTemp: LiveData<String?> = Transformations.map(currentWeatherInfo) {
-        it.main?.tempMax?.toInt()?.toString()
+        it.main?.tempMax?.toInt()?.toString() + DEGREE_SYMBOL
     }
 
     val weatherDescription: LiveData<String?> = Transformations.map(currentWeatherInfo) {

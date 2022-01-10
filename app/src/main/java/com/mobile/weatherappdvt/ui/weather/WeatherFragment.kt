@@ -75,15 +75,16 @@ class WeatherFragment : Fragment() {
         }
 
         weatherViewModel.currentTemp.observe(this) {
-            setCurrentTemp(it)
+            binding.temp.text = it
+            binding.currentTemp.text = it
         }
 
         weatherViewModel.minTemp.observe(this) {
-            setMinTemp(it)
+            binding.minTemp.text = it
         }
 
         weatherViewModel.maxTemp.observe(this) {
-            setMaxTemp(it)
+            binding.maxTemp.text = it
         }
 
         weatherViewModel.weatherDescription.observe(this) {
@@ -151,22 +152,6 @@ class WeatherFragment : Fragment() {
             if(it == NO_LOCATION_FOUND) View.VISIBLE else View.GONE
     }
 
-    private fun setCurrentTemp(it: String?) {
-        val temp = convertToTempFormat(it)
-        binding.temp.text = temp
-        binding.currentTemp.text = temp
-    }
-
-    private fun setMinTemp(it: String?) {
-        val temp = convertToTempFormat(it)
-        binding.minTemp.text = temp
-    }
-
-    private fun setMaxTemp(it: String?) {
-        val temp = convertToTempFormat(it)
-        binding.maxTemp.text = temp
-    }
-
     private fun setImageViewDrawable(it: Int?) {
         val drawable = it?.let { drawable -> ResourcesCompat.getDrawable(resources, drawable, null) }
         binding.image.setImageDrawable(drawable)
@@ -178,6 +163,4 @@ class WeatherFragment : Fragment() {
             binding.parentView.setBackgroundColor(color)
         }
     }
-
-    private fun convertToTempFormat(it: String?): String = getString(R.string.temp, it)
 }
