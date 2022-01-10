@@ -20,9 +20,35 @@
                 android:id="@+id/currentWeatherProgress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:elevation="1dp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="There was an error" />
+
+            <Button
+                android:id="@+id/retryWeather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/retry"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/message" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/currentWeatherContainer"
@@ -40,8 +66,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="48dp"
                     android:elevation="1dp"
+                    android:textAppearance="?textAppearanceHeadline1"
                     android:textColor="@color/white"
-                    android:textSize="70sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -50,15 +76,17 @@
 
                 <TextView
                     android:id="@+id/weather_description"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
                     android:layout_height="wrap_content"
                     android:elevation="1dp"
                     android:textAllCaps="true"
+                    android:textAppearance="?textAppearanceHeadline2"
                     android:textColor="@color/white"
-                    android:textSize="36sp"
-                    app:layout_constraintEnd_toEndOf="@+id/temp"
-                    app:layout_constraintStart_toStartOf="@+id/temp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/temp"
+                    app:layout_constraintWidth_default="wrap"
                     tools:text="SUNNY" />
 
                 <TextView
@@ -67,7 +95,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:elevation="1dp"
-                    android:textAllCaps="true"
                     android:textColor="@color/white"
                     android:textSize="22sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -80,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:elevation="1dp"
-                    android:text="min"
+                    android:text="@string/min"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -91,7 +118,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:elevation="1dp"
-                    android:textAllCaps="true"
                     android:textColor="@color/white"
                     android:textSize="22sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -103,7 +129,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:elevation="1dp"
-                    android:text="Current"
+                    android:text="@string/current"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="@+id/currentTemp"
@@ -116,7 +142,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:elevation="1dp"
-                    android:textAllCaps="true"
                     android:textColor="@color/white"
                     android:textSize="22sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -130,7 +155,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:elevation="1dp"
-                    android:text="max"
+                    android:text="@string/max"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -153,12 +178,45 @@
                 android:layout_height="2dp"
                 android:layout_marginTop="8dp"
                 android:background="@color/white"
+                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/currentWeatherContainer" />
+
+            <TextView
+                android:id="@+id/locationNotFound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/location_not_found_select_location_manually"
+                android:textAppearance="?textAppearanceBody1"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/setLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/set"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/locationNotFound"
+                android:visibility="gone"/>
+
+            <ProgressBar
+                android:id="@+id/forecastProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/forecastList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider"
                 tools:listitem="@layout/day_forecast_list_item" />

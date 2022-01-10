@@ -2,4 +2,10 @@
     <string name="app_name">WeatherAppDVT</string>
     <string name="temp"> %1$s\u00B0</string>
     <string name="location_permissions_required">You need to grant location permissions to use this app.</string>
+    <string name="retry">retry</string>
+    <string name="current">Current</string>
+    <string name="max">max</string>
+    <string name="min">min</string>
+    <string name="location_not_found_select_location_manually">Location not found. Select location manually?</string>
+    <string name="set">set</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.mobile.weatherappdvt.ui.weather
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.mobile.weatherappdvt.model.FiveDayForecast
@@ -8,6 +9,7 @@ import com.mobile.weatherappdvt.util.MockResponseFileReader
 
 class FakeForecastRepository(private val path: String): ForecastRepository {
     override val fiveDayForecast = MutableLiveData<FiveDayForecast>()
+    override val isLoading = MutableLiveData<Boolean>()
 
     override fun getForecast(lat: Double, lon: Double) {
         val reader = MockResponseFileReader(path)

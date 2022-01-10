@@ -1,17 +1,18 @@
 package com.mobile.weatherappdvt.ui.weather.api
 
 import androidx.lifecycle.MutableLiveData
+import com.mobile.weatherappdvt.api.ABaseRequestManager
 import com.mobile.weatherappdvt.api.ApiInterface
 import com.mobile.weatherappdvt.model.CurrentWeatherInfo
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 import javax.inject.Inject
 
-class WeatherRequestManager @Inject constructor(private val apiInterface: ApiInterface) {
+class WeatherRequestManager @Inject constructor(private val apiInterface: ApiInterface): ABaseRequestManager() {
 
     val currentWeatherInfo = MutableLiveData<CurrentWeatherInfo>()
-    val isLoading = MutableLiveData<Boolean>()
 
     fun getCurrentWeatherInfo(lat: Double, lon: Double) {
         setIsLoading(true)
@@ -23,13 +24,16 @@ class WeatherRequestManager @Inject constructor(private val apiInterface: ApiInt
             }
 
             override fun onFailure(call: Call<CurrentWeatherInfo>, t: Throwable) {
-                currentWeatherInfo.value = CurrentWeatherInfo(errorMessage = "There was an error")
+                // TODO: Extract string resources 
+                val message: String = if (t is IOException) {
+                    "Could not retrieve the current weather. You may have lost your internet connection"
+                } else {
+                    "There was an error. Could not retrieve the current weather."
+                }
+
+                currentWeatherInfo.value = CurrentWeatherInfo(errorMessage = message)
                 setIsLoading(false)
             }
         })
-    }
-
-    private fun setIsLoading(isLoading: Boolean) {
-        this.isLoading.value = isLoading
     }
 }

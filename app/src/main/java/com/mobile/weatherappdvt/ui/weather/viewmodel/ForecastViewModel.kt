@@ -7,18 +7,19 @@ import com.mobile.weatherappdvt.R
 import com.mobile.weatherappdvt.model.FiveDayForecast
 import com.mobile.weatherappdvt.model.ForecastListItem
 import com.mobile.weatherappdvt.ui.weather.repository.ForecastRepository
+import com.mobile.weatherappdvt.util.Constants.CLEAR
+import com.mobile.weatherappdvt.util.Constants.CLOUDS
+import com.mobile.weatherappdvt.util.Constants.RAIN
 import com.mobile.weatherappdvt.util.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-
-private const val RAIN = "Rain"
-private const val CLEAR = "Clear"
-private const val CLOUDS = "Clouds"
 
 @HiltViewModel
 class ForecastViewModel @Inject constructor(private val repository: ForecastRepository): ViewModel() {
 
     private val fiveDayForecast: LiveData<FiveDayForecast> = repository.fiveDayForecast
+
+    val isLoading: LiveData<Boolean> = repository.isLoading
 
     val forecast: LiveData<ArrayList<ForecastListItem>> = Transformations.map(fiveDayForecast) {
         val list: ArrayList<ForecastListItem> = ArrayList()

@@ -5,5 +5,6 @@ import com.mobile.weatherappdvt.model.FiveDayForecast
 
 interface ForecastRepository {
     val fiveDayForecast: LiveData<FiveDayForecast>
+    val isLoading: LiveData<Boolean>
     fun getForecast(lat: Double, lon: Double)
 }

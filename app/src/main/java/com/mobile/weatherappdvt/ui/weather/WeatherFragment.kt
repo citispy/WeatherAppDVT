@@ -1,12 +1,8 @@
 package com.mobile.weatherappdvt.ui.weather
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.content.Context
 import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +15,8 @@ import com.mobile.weatherappdvt.R
 import com.mobile.weatherappdvt.databinding.FragmentWeatherBinding
 import com.mobile.weatherappdvt.ui.weather.viewmodel.ForecastViewModel
 import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel
+import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel.*
+import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel.UiState.*
 import com.mobile.weatherappdvt.util.TrackingUtils
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -36,17 +34,25 @@ class WeatherFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+        savedInstanceState: Bundle?): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_weather, container, false)
+        binding.retryWeather.setOnClickListener {
+            val location = TrackingUtils.getLastKnownLocation(requireContext())
+            getWeatherAttempt(location)
+        }
+
         adapter = ForecastAdapter(requireContext())
 
         initForecastsList()
         observeViewModels()
-        requestLocationPermissions()
 
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        checkLocationPermissions()
     }
 
     private fun initForecastsList() {
@@ -55,12 +61,13 @@ class WeatherFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         forecastList.adapter = adapter
     }
 
-
     private fun observeViewModels() {
-        weatherViewModel.isLoading.observe(this) {
-            binding.currentWeatherProgress.visibility = if(it) View.VISIBLE else View.GONE
-            binding.currentWeatherContainer.visibility = if(it) View.GONE else View.VISIBLE
-            binding.divider.visibility = if(it) View.GONE else View.VISIBLE
+        weatherViewModel.errorMessage.observe(this) {
+            setErrorMessage(it)
+        }
+
+        weatherViewModel.uiState.observe(this) {
+            setVisibility(it)
         }
 
         weatherViewModel.currentTemp.observe(this) {
@@ -90,11 +97,17 @@ class WeatherFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         forecastViewModel.forecast.observe(this) {
             adapter.updateForecasts(it)
         }
+
+        forecastViewModel.isLoading.observe(this) {
+            binding.forecastProgress.visibility = if (it) View.VISIBLE else View.GONE
+            binding.forecastList.visibility = if (it) View.GONE else View.VISIBLE
+        }
     }
 
-    private fun requestLocationPermissions() {
+    private fun checkLocationPermissions() {
         if (TrackingUtils.hasLocationPermissions(requireContext())) {
-            getLastKnownLocation()
+            val location = TrackingUtils.getLastKnownLocation(requireContext())
+            getWeatherAttempt(location)
         } else {
             EasyPermissions.requestPermissions(
                 this,
@@ -105,25 +118,63 @@ class WeatherFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         }
     }
 
-    @SuppressLint("MissingPermission")
-    private fun getLastKnownLocation() {
-        val locationManager = context!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val location: Location? = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER)
-        Log.d(WeatherFragment::javaClass.name, "latitude: " + location?.latitude + " longitude: " + location?.longitude)
-        getWeatherInfoAttempt(location)
-    }
-
-    private fun getWeatherInfoAttempt(location: Location?) {
-        when {
-            location == null -> return
-            weatherViewModel.currentWeatherInfo.value != null -> return
-            else -> getWeatherInfo(location)
+    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            AppSettingsDialog.Builder(this).build().show()
+        } else {
+            checkLocationPermissions()
         }
     }
 
-    private fun getWeatherInfo(location: Location) {
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+        val location = TrackingUtils.getLastKnownLocation(requireContext())
+        getWeatherAttempt(location)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    private fun getWeatherAttempt(location: Location?) {
+        when {
+            location == null -> setNoLocationViewsVisible(true)
+            weatherViewModel.haveAllWeatherInfo() -> return
+            else -> {
+                getWeatherFor(location)
+                setNoLocationViewsVisible(false)
+            }
+        }
+    }
+
+    private fun setNoLocationViewsVisible(visible: Boolean) {
+        val visibility = if(visible) View.VISIBLE else View.GONE
+        binding.locationNotFound.visibility = visibility
+        binding.setLocation.visibility = visibility
+    }
+
+    private fun getWeatherFor(location: Location) {
         weatherViewModel.getCurrentWeather(location.longitude, location.latitude)
         forecastViewModel.getForecast(location.longitude, location.latitude)
+    }
+
+    private fun setErrorMessage(it: String?) {
+        if (it != null) {
+            binding.message.text = it
+        }
+    }
+
+    private fun setVisibility(it: UiState?) {
+        binding.message.visibility =
+            if (it == ERROR_MESSAGE_RECEIVED) View.VISIBLE else View.GONE
+        binding.retryWeather.visibility =
+            if (it == ERROR_MESSAGE_RECEIVED) View.VISIBLE else View.GONE
+        binding.currentWeatherContainer.visibility =
+            if (it == SUCCESSFULLY_RETRIEVED_DATA) View.VISIBLE else View.GONE
+        binding.divider.visibility =
+            if (it == SUCCESSFULLY_RETRIEVED_DATA) View.VISIBLE else View.GONE
+        binding.currentWeatherProgress.visibility =
+            if (it == LOADING) View.VISIBLE else View.GONE
     }
 
     private fun setCurrentTemp(it: String?) {
@@ -155,19 +206,4 @@ class WeatherFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     }
 
     private fun convertToTempFormat(it: String?): String = getString(R.string.temp, it)
-
-    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-        getLastKnownLocation()
-    }
-
-    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            AppSettingsDialog.Builder(this).build().show()
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-    }
 }
