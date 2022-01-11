@@ -111,7 +111,6 @@ class WeatherFragment : Fragment() {
 
         weatherViewModel.location.observe(this) {
             if (it != null) {
-                val city = FormatUtils.descriptionForLocation(it, requireContext())
                 getWeatherFor(it)
             }
         }
