@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mobile.weatherappdvt.R
 import com.mobile.weatherappdvt.databinding.FragmentWeatherBinding
@@ -37,6 +38,7 @@ class WeatherFragment : Fragment() {
     private val weatherViewModel: WeatherViewModel by viewModels()
     private val forecastViewModel: ForecastViewModel by viewModels()
     private val permissionsViewModel: PermissionsViewModel by activityViewModels()
+    private val locationViewModel: LocationViewModel by activityViewModels()
     private lateinit var binding: FragmentWeatherBinding
     private lateinit var adapter: ForecastAdapter
 
@@ -46,12 +48,9 @@ class WeatherFragment : Fragment() {
     ): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_weather, container, false)
-        binding.retryWeather.setOnClickListener {
-            provideLocation()
-        }
-
         adapter = ForecastAdapter(requireContext())
 
+        initClickListeners()
         initForecastsList()
         observeViewModels()
 
@@ -61,6 +60,15 @@ class WeatherFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         permissionsViewModel.requestLocationPermissions()
+    }
+
+    private fun initClickListeners() {
+        binding.retryWeather.setOnClickListener {
+            provideLocation()
+        }
+        binding.setLocation.setOnClickListener() {
+            findNavController().navigate(R.id.action_weatherFragment_to_placePickerFragment)
+        }
     }
 
     private fun initForecastsList() {
@@ -73,6 +81,7 @@ class WeatherFragment : Fragment() {
         observerWeatherViewModel()
         observeForecastViewModel()
         observePermissionsViewModel()
+        observeLocationViewModel()
     }
 
     private fun observerWeatherViewModel() {
@@ -108,10 +117,19 @@ class WeatherFragment : Fragment() {
         weatherViewModel.backgroundColor.observe(this) {
             setBackgroundColor(it)
         }
+    }
 
-        weatherViewModel.location.observe(this) {
+    private fun observeLocationViewModel() {
+        locationViewModel.location.observe(this) {
             if (it != null) {
                 getWeatherFor(it)
+            }
+        }
+
+        locationViewModel.cityName.observe(this) {
+            if (it != null) {
+                getWeatherFor(it)
+                weatherViewModel.isLocationSet.value = true
             }
         }
     }
@@ -135,11 +153,20 @@ class WeatherFragment : Fragment() {
 
     private fun provideLocation() {
         val location = TrackingUtils.getLastKnownLocation(requireContext())
-        weatherViewModel.setLiveLocation(location)
+        if (location == null && locationViewModel.cityName.value == null) {
+            weatherViewModel.isLocationSet.value = false
+            return
+        }
+        locationViewModel.location.value = location
     }
 
     private fun getWeatherFor(location: Location) {
         val city = FormatUtils.descriptionForLocation(location, requireContext())
+        locationViewModel.setCityName(city)
+        getWeatherFor(city)
+    }
+
+    private fun getWeatherFor(city: String?) {
         weatherViewModel.getCurrentWeather(city)
         forecastViewModel.getForecast(city)
     }

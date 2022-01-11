@@ -44,7 +44,7 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
         it.errorMessage
     }
 
-    val location = MutableLiveData<Location?>()
+    val isLocationSet = MutableLiveData<Boolean>()
 
     val imageDrawable: LiveData<Int?> = Transformations.map(currentWeatherInfo) {
         when (it.weather?.get(0)?.main) {
@@ -68,10 +68,6 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
         repository.getCurrentWeather(cityName)
     }
 
-    fun setLiveLocation(newLocation: Location?) {
-        location.value = newLocation
-    }
-
     init {
         uiState.addSource(isLoading) {
             if (it) {
@@ -87,8 +83,8 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
             }
         }
 
-        uiState.addSource(location) {
-            if (location.value == null) {
+        uiState.addSource(isLocationSet) {
+            if (isLocationSet.value == false) {
                 setUiState(UiState.NO_LOCATION_FOUND)
             }
         }

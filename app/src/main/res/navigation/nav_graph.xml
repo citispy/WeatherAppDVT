@@ -2,11 +2,21 @@
 <navigation
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/weatherFragment">
 
     <fragment
         android:id="@+id/weatherFragment"
         android:name="com.mobile.weatherappdvt.ui.weather.WeatherFragment"
-        android:label="WeatherFragment" />
+        android:label="WeatherFragment" >
+        <action
+            android:id="@+id/action_weatherFragment_to_placePickerFragment"
+            app:destination="@id/placePickerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/placePickerFragment"
+        android:name="com.mobile.weatherappdvt.ui.placepicker.PlacePickerFragment"
+        android:label="fragment_place_picker"
+        tools:layout="@layout/fragment_place_picker" />
 </navigation>
