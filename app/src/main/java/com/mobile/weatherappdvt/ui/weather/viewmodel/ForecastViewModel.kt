@@ -11,6 +11,7 @@ import com.mobile.weatherappdvt.util.Constants.CLEAR
 import com.mobile.weatherappdvt.util.Constants.CLOUDS
 import com.mobile.weatherappdvt.util.Constants.RAIN
 import com.mobile.weatherappdvt.util.DateUtils
+import com.mobile.weatherappdvt.util.FormatUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -45,12 +46,13 @@ class ForecastViewModel @Inject constructor(private val repository: ForecastRepo
                 val main = forecast.main
 
                 val temp = main?.temp?.toInt()?.toString()
+                val formattedTemp = FormatUtils.getTempFormat(temp)
                 val day = DateUtils.getDayForDate(forecast.dtTxt)
                 val weatherDescription = forecast.weather?.get(0)?.main
                 val imageDrawable = getImageDrawable(weatherDescription)
 
-                if (temp != null && day != null && imageDrawable != null) {
-                    val item = ForecastListItem(temp, day, imageDrawable)
+                if (formattedTemp != null && day != null && imageDrawable != null) {
+                    val item = ForecastListItem(formattedTemp, day, imageDrawable)
                     addHighestTempPerDay(list, item)
                 }
             }

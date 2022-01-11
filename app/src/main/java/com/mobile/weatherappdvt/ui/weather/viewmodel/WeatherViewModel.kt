@@ -9,6 +9,7 @@ import com.mobile.weatherappdvt.util.Constants.CLEAR
 import com.mobile.weatherappdvt.util.Constants.CLOUDS
 import com.mobile.weatherappdvt.util.Constants.DEGREE_SYMBOL
 import com.mobile.weatherappdvt.util.Constants.RAIN
+import com.mobile.weatherappdvt.util.FormatUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -22,15 +23,18 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
     val uiState = MediatorLiveData<UiState>()
 
     val currentTemp: LiveData<String?> = Transformations.map(currentWeatherInfo) {
-        it.main?.temp?.toInt()?.toString() + DEGREE_SYMBOL
+        val temp = it.main?.temp?.toInt()?.toString()
+        FormatUtils.getTempFormat(temp)
     }
 
     val minTemp: LiveData<String?> = Transformations.map(currentWeatherInfo) {
-        it.main?.tempMin?.toInt()?.toString() + DEGREE_SYMBOL
+        val temp = it.main?.temp?.toInt()?.toString()
+        FormatUtils.getTempFormat(temp)
     }
 
     val maxTemp: LiveData<String?> = Transformations.map(currentWeatherInfo) {
-        it.main?.tempMax?.toInt()?.toString() + DEGREE_SYMBOL
+        val temp = it.main?.temp?.toInt()?.toString()
+        FormatUtils.getTempFormat(temp)
     }
 
     val weatherDescription: LiveData<String?> = Transformations.map(currentWeatherInfo) {
@@ -74,7 +78,7 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
 
     fun setLiveLocation(location: Location?) {
         when {
-            haveAllWeatherInfo() -> return
+            haveAllWeatherInfo() -> return //Prevents reloading weather info on configuration changes
             else -> {
                 setLocation(location)
             }

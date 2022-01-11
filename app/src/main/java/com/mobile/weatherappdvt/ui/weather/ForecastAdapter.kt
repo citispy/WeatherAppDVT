@@ -36,15 +36,13 @@ class ForecastAdapter(private val context: Context) : RecyclerView.Adapter<Forec
             holder.day.text = forecast.day
             val imageDrawable = getImageDrawable(forecast.imageDrawableId)
             holder.image.setImageDrawable(imageDrawable)
-            holder.temp.text = convertToTempFormat(forecast.temp)
+            holder.temp.text = forecast.temp
         }
     }
 
     private fun getImageDrawable(drawableId: Int): Drawable? {
         return drawableId.let { drawable -> ResourcesCompat.getDrawable(context.resources, drawable, null) }
     }
-
-    private fun convertToTempFormat(it: String?): String = context.getString(R.string.temp, it)
 
     override fun getItemCount(): Int {
         return forecasts.size

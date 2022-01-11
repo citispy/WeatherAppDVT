@@ -20,6 +20,15 @@ import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel.*
 import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel.UiState.*
 import com.mobile.weatherappdvt.util.TrackingUtils
 import dagger.hilt.android.AndroidEntryPoint
+import com.mobile.weatherappdvt.ui.main.MainActivity
+
+/**
+ * Fragment for displaying the current weather and 5 day forecast
+ * Before retrieving the weather information, we first check if location permissions were granted @see [MainActivity]
+ * Then we check if the user has a last known location @see [provideLocation]
+ * If the user has a location, then we make a call to the api
+ * If the user doesn't have a location, then an error message is displayed
+ */
 
 @AndroidEntryPoint
 class WeatherFragment : Fragment() {
@@ -36,8 +45,7 @@ class WeatherFragment : Fragment() {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_weather, container, false)
         binding.retryWeather.setOnClickListener {
-            val location = TrackingUtils.getLastKnownLocation(requireContext())
-            weatherViewModel.setLiveLocation(location)
+            provideLocation()
         }
 
         adapter = ForecastAdapter(requireContext())
@@ -119,9 +127,13 @@ class WeatherFragment : Fragment() {
 
     private fun observePermissionsViewModel() {
         permissionsViewModel.locationPermissionsGranted.observe(this) {
-            val location = TrackingUtils.getLastKnownLocation(requireContext())
-            weatherViewModel.setLiveLocation(location)
+            provideLocation()
         }
+    }
+
+    private fun provideLocation() {
+        val location = TrackingUtils.getLastKnownLocation(requireContext())
+        weatherViewModel.setLiveLocation(location)
     }
 
     private fun getWeatherFor(location: Location) {
