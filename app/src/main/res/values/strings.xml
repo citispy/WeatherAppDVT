@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">WeatherAppDVT</string>
+    <string name="places_api_key">AIzaSyCYU1Vcxv_GEgscA3WfXSH93VfTX1vz1Cs</string>
     <string name="temp"> %1$s\u00B0</string>
     <string name="location_permissions_required">You need to grant location permissions to use this app.</string>
     <string name="retry">retry</string>
