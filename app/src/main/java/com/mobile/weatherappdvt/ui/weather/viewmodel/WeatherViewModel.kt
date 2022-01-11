@@ -13,7 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class WeatherViewModel @Inject constructor(private val repository: WeatherRepository): ViewModel() {
+class WeatherViewModel @Inject constructor(private val repository: WeatherRepository) : ViewModel() {
 
     private val currentWeatherInfo: LiveData<CurrentWeatherInfo> = repository.currentWeather
 
@@ -47,16 +47,16 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
     val location = MutableLiveData<Location?>()
 
     val imageDrawable: LiveData<Int?> = Transformations.map(currentWeatherInfo) {
-            when(it.weather?.get(0)?.main) {
-                RAIN -> R.drawable.forest_rainy
-                CLEAR -> R.drawable.forest_sunny
-                CLOUDS -> R.drawable.forest_cloudy
-                else -> null
-            }
+        when (it.weather?.get(0)?.main) {
+            RAIN -> R.drawable.forest_rainy
+            CLEAR -> R.drawable.forest_sunny
+            CLOUDS -> R.drawable.forest_cloudy
+            else -> null
+        }
     }
 
     val backgroundColor: LiveData<Int?> = Transformations.map(currentWeatherInfo) {
-        when(it.weather?.get(0)?.main) {
+        when (it.weather?.get(0)?.main) {
             RAIN -> R.color.rain_dark_grey
             CLEAR -> R.color.clear_green
             CLOUDS -> R.color.clouds_grey
@@ -68,23 +68,7 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
         repository.getCurrentWeather(cityName)
     }
 
-    private fun haveAllWeatherInfo() : Boolean {
-        return currentTemp.value != null &&
-                minTemp.value !== null &&
-                maxTemp.value != null &&
-                weatherDescription.value != null
-    }
-
-    fun setLiveLocation(location: Location?) {
-        when {
-            haveAllWeatherInfo() -> return //Prevents reloading weather info on configuration changes
-            else -> {
-                setLocation(location)
-            }
-        }
-    }
-
-    private fun setLocation(newLocation: Location?) {
+    fun setLiveLocation(newLocation: Location?) {
         location.value = newLocation
     }
 
