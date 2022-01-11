@@ -7,7 +7,6 @@ import com.mobile.weatherappdvt.model.CurrentWeatherInfo
 import com.mobile.weatherappdvt.ui.weather.repository.WeatherRepository
 import com.mobile.weatherappdvt.util.Constants.CLEAR
 import com.mobile.weatherappdvt.util.Constants.CLOUDS
-import com.mobile.weatherappdvt.util.Constants.DEGREE_SYMBOL
 import com.mobile.weatherappdvt.util.Constants.RAIN
 import com.mobile.weatherappdvt.util.FormatUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -65,8 +64,8 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
         }
     }
 
-    fun getCurrentWeather(lat: Double, lon: Double) {
-        repository.getCurrentWeather(lat, lon)
+    fun getCurrentWeather(cityName: String?) {
+        repository.getCurrentWeather(cityName)
     }
 
     private fun haveAllWeatherInfo() : Boolean {

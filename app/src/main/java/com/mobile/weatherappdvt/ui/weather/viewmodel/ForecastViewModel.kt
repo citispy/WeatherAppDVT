@@ -84,7 +84,7 @@ class ForecastViewModel @Inject constructor(private val repository: ForecastRepo
         }
     }
 
-    fun getForecast(lat: Double, lon: Double) {
-        repository.getForecast(lat, lon)
+    fun getForecast(cityName: String?) {
+        repository.getForecast(cityName)
     }
 }

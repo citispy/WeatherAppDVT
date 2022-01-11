@@ -7,5 +7,5 @@ import com.mobile.weatherappdvt.model.CurrentWeatherInfo
 interface WeatherRepository {
     val currentWeather: LiveData<CurrentWeatherInfo>
     val isLoading: LiveData<Boolean>
-    fun getCurrentWeather(lat: Double, lon: Double)
+    fun getCurrentWeather(cityName: String?)
 }

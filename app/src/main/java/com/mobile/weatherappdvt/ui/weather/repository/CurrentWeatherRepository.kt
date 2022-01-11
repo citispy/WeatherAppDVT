@@ -11,7 +11,7 @@ class CurrentWeatherRepository @Inject constructor(private val webRequestRequest
     override val currentWeather: MutableLiveData<CurrentWeatherInfo> = webRequestRequestManager.currentWeatherInfo
     override val isLoading: LiveData<Boolean> = webRequestRequestManager.isLoading
 
-    override fun getCurrentWeather(lat: Double, lon: Double) {
-        webRequestRequestManager.getCurrentWeatherInfo(lat, lon)
+    override fun getCurrentWeather(cityName: String?) {
+        webRequestRequestManager.getCurrentWeatherInfo(cityName)
     }
 }

@@ -9,7 +9,7 @@ class ForecastWeatherRepository @Inject constructor(private val forecastRequestM
     override val fiveDayForecast: LiveData<FiveDayForecast> =  forecastRequestManager.fiveDayForecast
     override val isLoading = forecastRequestManager.isLoading
 
-    override fun getForecast(lat: Double, lon: Double) {
-        forecastRequestManager.getForecast(lat, lon)
+    override fun getForecast(cityName: String?) {
+        forecastRequestManager.getForecast(cityName)
     }
 }

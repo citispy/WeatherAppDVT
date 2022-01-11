@@ -1,15 +1,17 @@
 package com.mobile.weatherappdvt.ui.weather
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.mobile.weatherappdvt.model.CurrentWeatherInfo
 import com.mobile.weatherappdvt.ui.weather.repository.WeatherRepository
 import com.mobile.weatherappdvt.util.MockResponseFileReader
 
-class FakeCurrentWeatherRepository(private val path: String): WeatherRepository {
+class FakeCurrentWeatherRepository private constructor(private val path: String): WeatherRepository {
     override val currentWeather =  MutableLiveData<CurrentWeatherInfo>()
+    override val isLoading = MutableLiveData<Boolean>()
 
-    override fun getCurrentWeather(lat: Double, lon: Double) {
+    override fun getCurrentWeather(cityName: String?) {
         val reader = MockResponseFileReader(path)
         val gson = Gson()
         val currentWeatherInfo = gson.fromJson(reader.content, CurrentWeatherInfo::class.java)

@@ -14,10 +14,10 @@ class WeatherRequestManager @Inject constructor(private val apiInterface: ApiInt
 
     val currentWeatherInfo = MutableLiveData<CurrentWeatherInfo>()
 
-    fun getCurrentWeatherInfo(lat: Double, lon: Double) {
+    fun getCurrentWeatherInfo(cityName: String?) {
         setIsLoading(true)
 
-        apiInterface.getCurrentWeatherInfo(lat, lon).enqueue(object : Callback<CurrentWeatherInfo> {
+        apiInterface.getCurrentWeatherInfo(cityName).enqueue(object : Callback<CurrentWeatherInfo> {
             override fun onResponse(call: Call<CurrentWeatherInfo>, response: Response<CurrentWeatherInfo>) {
                 currentWeatherInfo.value = response.body()
                 setIsLoading(false)

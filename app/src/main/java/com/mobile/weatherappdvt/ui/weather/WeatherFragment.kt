@@ -21,6 +21,7 @@ import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel.UiState.*
 import com.mobile.weatherappdvt.util.TrackingUtils
 import dagger.hilt.android.AndroidEntryPoint
 import com.mobile.weatherappdvt.ui.main.MainActivity
+import com.mobile.weatherappdvt.util.FormatUtils
 
 /**
  * Fragment for displaying the current weather and 5 day forecast
@@ -41,7 +42,8 @@ class WeatherFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View {
+        savedInstanceState: Bundle?
+    ): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_weather, container, false)
         binding.retryWeather.setOnClickListener {
@@ -109,6 +111,7 @@ class WeatherFragment : Fragment() {
 
         weatherViewModel.location.observe(this) {
             if (it != null) {
+                val city = FormatUtils.descriptionForLocation(it, requireContext())
                 getWeatherFor(it)
             }
         }
@@ -137,8 +140,9 @@ class WeatherFragment : Fragment() {
     }
 
     private fun getWeatherFor(location: Location) {
-        weatherViewModel.getCurrentWeather(location.longitude, location.latitude)
-        forecastViewModel.getForecast(location.longitude, location.latitude)
+        val city = FormatUtils.descriptionForLocation(location, requireContext())
+        weatherViewModel.getCurrentWeather(city)
+        forecastViewModel.getForecast(city)
     }
 
     private fun setErrorMessage(it: String?) {
@@ -159,9 +163,9 @@ class WeatherFragment : Fragment() {
         binding.currentWeatherProgress.visibility =
             if (it == LOADING) View.VISIBLE else View.GONE
         binding.locationNotFound.visibility =
-            if(it == NO_LOCATION_FOUND) View.VISIBLE else View.GONE
+            if (it == NO_LOCATION_FOUND) View.VISIBLE else View.GONE
         binding.setLocation.visibility =
-            if(it == NO_LOCATION_FOUND) View.VISIBLE else View.GONE
+            if (it == NO_LOCATION_FOUND) View.VISIBLE else View.GONE
     }
 
     private fun setImageViewDrawable(it: Int?) {

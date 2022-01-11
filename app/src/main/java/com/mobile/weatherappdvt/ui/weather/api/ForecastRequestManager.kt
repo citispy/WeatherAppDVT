@@ -14,10 +14,10 @@ class ForecastRequestManager @Inject constructor(private val apiInterface: ApiIn
 
     val fiveDayForecast = MutableLiveData<FiveDayForecast>()
 
-    fun getForecast(lat: Double, lon: Double) {
+    fun getForecast(cityName: String?) {
         setIsLoading(true)
 
-        apiInterface.getForecast(lat, lon).enqueue(object : Callback<FiveDayForecast> {
+        apiInterface.getForecast(cityName).enqueue(object : Callback<FiveDayForecast> {
             override fun onResponse(call: Call<FiveDayForecast>, response: Response<FiveDayForecast>) {
                 fiveDayForecast.value = response.body()
                 setIsLoading(false)
