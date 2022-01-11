@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             val visibility = if(it) View.GONE else View.VISIBLE
             binding.noPermissons.visibility = visibility
             binding.enablePermissions.visibility = visibility
-            binding.navigationView.visibility = if(it) View.VISIBLE else View.GONE
+            binding.navHost.visibility = if(it) View.VISIBLE else View.GONE
         }
     }
 
