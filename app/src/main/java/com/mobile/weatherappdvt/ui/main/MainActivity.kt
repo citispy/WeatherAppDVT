@@ -39,9 +39,6 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.enablePermissions.setOnClickListener {
-            AppSettingsDialog.Builder(this).build().show()
-        }
         observeViewModel()
         initNavController()
     }
@@ -50,10 +47,13 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.navHost)
                 as NavHostFragment
         navController = navHostFragment.navController
-        //Set toolbar title before setting NavGraph. Otherwise the title won't set.
-        binding.toolbar.title = SharedPrefsUtils(this).getPrefs(KEY_CITY_NAME)
-        navController.setGraph(R.navigation.nav_graph)
 
+        navController.setGraph(R.navigation.nav_graph)
+        //Add destination change listener for cases when title doesn't set
+        navController.addOnDestinationChangedListener {_, destination, _ ->
+            if (destination.id == R.id.weatherFragment) {
+                binding.toolbar.title = SharedPrefsUtils(this).getPrefs(KEY_CITY_NAME)
+        }}
         //Navigation Drawer
         NavigationUI.setupWithNavController(binding.navView, navController)
         initNavDrawerHeader()
@@ -105,13 +105,6 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             if (it.contentIfNotHandled == true) {
                 checkLocationPermissions()
             }
-        }
-
-        permissionsViewModel.locationPermissionsGranted.observe(this) {
-            val visibility = if (it.peekContent()) View.GONE else View.VISIBLE
-            binding.noPermissons.visibility = visibility
-            binding.enablePermissions.visibility = visibility
-            binding.navHost.visibility = if (it.peekContent()) View.VISIBLE else View.GONE
         }
     }
 

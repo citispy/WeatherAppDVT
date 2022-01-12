@@ -150,6 +150,8 @@ class WeatherFragment : Fragment() {
         permissionsViewModel.locationPermissionsGranted.observe(this) {
             if (it.contentIfNotHandled == true) {
                 provideLocation()
+            } else {
+                weatherViewModel.isLocationSet.value = false
             }
         }
     }
