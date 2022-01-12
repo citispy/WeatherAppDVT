@@ -11,4 +11,6 @@
     <string name="set">set</string>
     <string name="you_don_t_have_the_required_permissions">You don\'t have the required permissions</string>
     <string name="enable">enable</string>
+    <string name="favourites">Favourites</string>
+    <string name="no_city_yet">No city has been selected yet</string>
 </resources>

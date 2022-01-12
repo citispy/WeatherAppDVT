@@ -15,7 +15,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.mobile.weatherappdvt.R
-import com.mobile.weatherappdvt.ui.weather.LocationViewModel
+import com.mobile.weatherappdvt.ui.weather.viewmodel.LocationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

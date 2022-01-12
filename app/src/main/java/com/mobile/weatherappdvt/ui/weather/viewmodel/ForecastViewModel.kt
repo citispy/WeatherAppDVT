@@ -24,7 +24,9 @@ class ForecastViewModel @Inject constructor(private val repository: ForecastRepo
 
     val forecast: LiveData<ArrayList<ForecastListItem>> = Transformations.map(fiveDayForecast) {
         val list: ArrayList<ForecastListItem> = ArrayList()
-        populateList(it, list)
+        if (it != null) {
+            populateList(it, list)
+        }
         list
     }
 

@@ -68,6 +68,13 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
         repository.getCurrentWeather(cityName)
     }
 
+    fun hasAllWeatherInfo() : Boolean {
+        return currentTemp.value != null &&
+                minTemp.value !== null &&
+                maxTemp.value != null &&
+                weatherDescription.value != null
+    }
+
     init {
         uiState.addSource(isLoading) {
             if (it) {

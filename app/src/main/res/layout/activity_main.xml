@@ -4,41 +4,64 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.main.MainActivity">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/noPermissons"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="16dp"
-            android:text="@string/you_don_t_have_the_required_permissions"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/enablePermissions" />
-
-        <Button
-            android:id="@+id/enablePermissions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/enable"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/navHost"
-            android:name="androidx.navigation.fragment.NavHostFragment"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:defaultNavHost="true"
-            app:navGraph="@navigation/nav_graph"/>
+            tools:context=".ui.main.MainActivity">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/noPermissons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="@string/you_don_t_have_the_required_permissions"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/enablePermissions" />
+
+            <Button
+                android:id="@+id/enablePermissions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/enable"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/navHost"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:defaultNavHost="true"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            app:headerLayout="@layout/nav_header"
+            app:menu="@menu/nav_drawer_menu" />
+
+    </androidx.drawerlayout.widget.DrawerLayout>
 
 </layout>

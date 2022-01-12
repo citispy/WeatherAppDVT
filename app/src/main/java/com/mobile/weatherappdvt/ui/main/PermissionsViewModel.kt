@@ -2,16 +2,15 @@ package com.mobile.weatherappdvt.ui.main
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.mobile.weatherappdvt.util.Event
 
 class PermissionsViewModel : ViewModel() {
 
-    val locationPermissionsRequested = MutableLiveData<Event<Boolean>>()
+    val locationPermissionsRequested = MutableLiveData<Boolean>()
 
     val locationPermissionsGranted = MutableLiveData<Boolean>()
 
-    fun requestLocationPermissions() {
-        locationPermissionsRequested.value = Event(true)
+    fun requestLocationPermissions(request : Boolean) {
+        locationPermissionsRequested.value = request
     }
 
     fun permissionsGranted(granted: Boolean) {

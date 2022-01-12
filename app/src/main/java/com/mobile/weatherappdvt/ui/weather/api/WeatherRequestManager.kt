@@ -19,7 +19,11 @@ class WeatherRequestManager @Inject constructor(private val apiInterface: ApiInt
 
         apiInterface.getCurrentWeatherInfo(cityName).enqueue(object : Callback<CurrentWeatherInfo> {
             override fun onResponse(call: Call<CurrentWeatherInfo>, response: Response<CurrentWeatherInfo>) {
-                currentWeatherInfo.value = response.body()
+                if(response.code() == 404) {
+                    currentWeatherInfo.value = CurrentWeatherInfo(errorMessage = "City not found!")
+                } else {
+                    currentWeatherInfo.value = response.body()
+                }
                 setIsLoading(false)
             }
 

@@ -2,6 +2,7 @@ package com.mobile.weatherappdvt.ui.weather
 
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,8 @@ import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel.UiState.*
 import com.mobile.weatherappdvt.util.TrackingUtils
 import dagger.hilt.android.AndroidEntryPoint
 import com.mobile.weatherappdvt.ui.main.MainActivity
+import com.mobile.weatherappdvt.ui.weather.viewmodel.LocationViewModel
+import com.mobile.weatherappdvt.util.Event
 import com.mobile.weatherappdvt.util.FormatUtils
 
 /**
@@ -35,10 +38,11 @@ import com.mobile.weatherappdvt.util.FormatUtils
 @AndroidEntryPoint
 class WeatherFragment : Fragment() {
 
+    private val locationViewModel: LocationViewModel by activityViewModels()
     private val weatherViewModel: WeatherViewModel by viewModels()
     private val forecastViewModel: ForecastViewModel by viewModels()
     private val permissionsViewModel: PermissionsViewModel by activityViewModels()
-    private val locationViewModel: LocationViewModel by activityViewModels()
+
     private lateinit var binding: FragmentWeatherBinding
     private lateinit var adapter: ForecastAdapter
 
@@ -57,11 +61,6 @@ class WeatherFragment : Fragment() {
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
-        permissionsViewModel.requestLocationPermissions()
-    }
-
     private fun initClickListeners() {
         binding.retryWeather.setOnClickListener {
             provideLocation()
@@ -78,10 +77,10 @@ class WeatherFragment : Fragment() {
     }
 
     private fun observeViewModels() {
+        observeLocationViewModel()
         observerWeatherViewModel()
         observeForecastViewModel()
         observePermissionsViewModel()
-        observeLocationViewModel()
     }
 
     private fun observerWeatherViewModel() {
@@ -121,8 +120,8 @@ class WeatherFragment : Fragment() {
 
     private fun observeLocationViewModel() {
         locationViewModel.location.observe(this) {
-            if (it != null) {
-                getWeatherFor(it)
+            if (it.contentIfNotHandled != null) {
+                getWeatherFor(it.peekContent())
             }
         }
 
@@ -130,6 +129,9 @@ class WeatherFragment : Fragment() {
             if (it != null) {
                 getWeatherFor(it)
                 weatherViewModel.isLocationSet.value = true
+                permissionsViewModel.requestLocationPermissions(false)
+            } else {
+                permissionsViewModel.requestLocationPermissions(true)
             }
         }
     }
@@ -147,17 +149,21 @@ class WeatherFragment : Fragment() {
 
     private fun observePermissionsViewModel() {
         permissionsViewModel.locationPermissionsGranted.observe(this) {
-            provideLocation()
+            Log.d("Permission granted", "no no no")
+            val permissionsRequested = permissionsViewModel.locationPermissionsRequested.value == true
+            if (it && permissionsRequested) {
+                provideLocation()
+            }
         }
     }
 
     private fun provideLocation() {
         val location = TrackingUtils.getLastKnownLocation(requireContext())
-        if (location == null && locationViewModel.cityName.value == null) {
+        if (location == null) {
             weatherViewModel.isLocationSet.value = false
             return
         }
-        locationViewModel.location.value = location
+        locationViewModel.location.value = Event(location)
     }
 
     private fun getWeatherFor(location: Location) {
