@@ -13,4 +13,5 @@
     <string name="enable">enable</string>
     <string name="favourites">Favourites</string>
     <string name="no_city_yet">No city has been selected yet</string>
+    <string name="map">Map</string>
 </resources>

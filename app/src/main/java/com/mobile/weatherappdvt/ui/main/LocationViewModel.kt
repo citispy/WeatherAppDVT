@@ -1,4 +1,4 @@
-package com.mobile.weatherappdvt.ui.weather.viewmodel
+package com.mobile.weatherappdvt.ui.main
 
 import android.location.Location
 import androidx.lifecycle.MutableLiveData

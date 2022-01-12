@@ -23,7 +23,7 @@ import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel.UiState.*
 import com.mobile.weatherappdvt.util.TrackingUtils
 import dagger.hilt.android.AndroidEntryPoint
 import com.mobile.weatherappdvt.ui.main.MainActivity
-import com.mobile.weatherappdvt.ui.weather.viewmodel.LocationViewModel
+import com.mobile.weatherappdvt.ui.main.LocationViewModel
 import com.mobile.weatherappdvt.util.Event
 import com.mobile.weatherappdvt.util.FormatUtils
 
@@ -129,7 +129,6 @@ class WeatherFragment : Fragment() {
             if (it != null) {
                 getWeatherFor(it)
                 weatherViewModel.isLocationSet.value = true
-                permissionsViewModel.requestLocationPermissions(false)
             } else {
                 permissionsViewModel.requestLocationPermissions(true)
             }
@@ -149,9 +148,7 @@ class WeatherFragment : Fragment() {
 
     private fun observePermissionsViewModel() {
         permissionsViewModel.locationPermissionsGranted.observe(this) {
-            Log.d("Permission granted", "no no no")
-            val permissionsRequested = permissionsViewModel.locationPermissionsRequested.value == true
-            if (it && permissionsRequested) {
+            if (it.contentIfNotHandled == true) {
                 provideLocation()
             }
         }

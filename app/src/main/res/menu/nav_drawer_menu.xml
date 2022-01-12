@@ -8,4 +8,10 @@
         android:icon="@drawable/ic_baseline_star_border"
         android:title="@string/favourites" />
 
+    <item
+        android:id="@+id/mapFragment"
+        android:checkable="true"
+        android:icon="@drawable/ic_map"
+        android:title="@string/map" />
+
 </menu>

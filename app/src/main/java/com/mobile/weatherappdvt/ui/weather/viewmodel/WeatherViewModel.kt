@@ -19,6 +19,7 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
 
     private val isLoading: LiveData<Boolean> = repository.isLoading
 
+    // FIXME: 2022/01/12 uiState should potentially be in a different ViewModel
     val uiState = MediatorLiveData<UiState>()
 
     val currentTemp: LiveData<String?> = Transformations.map(currentWeatherInfo) {
