@@ -37,10 +37,7 @@ class DateUtilsTest : TestCase() {
 
     @Test
     fun testIsNotToday() {
-        var notToday = DateUtils.isNotToday("2022-01-09 21:00:00")
-        assert(!notToday)
-
-        notToday = DateUtils.isNotToday("2022-01-10 21:00:00")
+        val notToday = DateUtils.isNotToday("2022-01-10 21:00:00")
         assert(notToday)
     }
 }
