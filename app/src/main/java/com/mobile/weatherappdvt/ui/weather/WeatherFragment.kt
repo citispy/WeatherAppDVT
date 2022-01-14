@@ -2,7 +2,6 @@ package com.mobile.weatherappdvt.ui.weather
 
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,17 +14,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mobile.weatherappdvt.R
 import com.mobile.weatherappdvt.databinding.FragmentWeatherBinding
+import com.mobile.weatherappdvt.ui.main.LocationViewModel
+import com.mobile.weatherappdvt.ui.main.MainActivity
 import com.mobile.weatherappdvt.ui.main.PermissionsViewModel
 import com.mobile.weatherappdvt.ui.weather.viewmodel.ForecastViewModel
+import com.mobile.weatherappdvt.ui.weather.viewmodel.UiViewModel
+import com.mobile.weatherappdvt.ui.weather.viewmodel.UiViewModel.UiState.*
 import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel
-import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel.*
-import com.mobile.weatherappdvt.ui.weather.viewmodel.WeatherViewModel.UiState.*
-import com.mobile.weatherappdvt.util.TrackingUtils
-import dagger.hilt.android.AndroidEntryPoint
-import com.mobile.weatherappdvt.ui.main.MainActivity
-import com.mobile.weatherappdvt.ui.main.LocationViewModel
 import com.mobile.weatherappdvt.util.Event
 import com.mobile.weatherappdvt.util.FormatUtils
+import com.mobile.weatherappdvt.util.TrackingUtils
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Fragment for displaying the current weather and 5 day forecast
@@ -42,9 +41,16 @@ class WeatherFragment : Fragment() {
     private val weatherViewModel: WeatherViewModel by viewModels()
     private val forecastViewModel: ForecastViewModel by viewModels()
     private val permissionsViewModel: PermissionsViewModel by activityViewModels()
+    private val uiViewModel: UiViewModel by viewModels()
 
     private lateinit var binding: FragmentWeatherBinding
     private lateinit var adapter: ForecastAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        uiViewModel.addErrorSource(weatherViewModel.errorMessage)
+        uiViewModel.addLoadingSource(weatherViewModel.isLoading)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -88,7 +94,7 @@ class WeatherFragment : Fragment() {
             setErrorMessage(it)
         }
 
-        weatherViewModel.uiState.observe(this) {
+        uiViewModel.uiState.observe(this) {
             setVisibility(it)
         }
 
@@ -128,7 +134,6 @@ class WeatherFragment : Fragment() {
         locationViewModel.cityName.observe(this) {
             if (it != null) {
                 getWeatherFor(it)
-                weatherViewModel.isLocationSet.value = true
             } else {
                 permissionsViewModel.requestLocationPermissions(true)
             }
@@ -151,7 +156,7 @@ class WeatherFragment : Fragment() {
             if (it.contentIfNotHandled == true) {
                 provideLocation()
             } else {
-                weatherViewModel.isLocationSet.value = false
+                uiViewModel.setNoLocation()
             }
         }
     }
@@ -159,7 +164,7 @@ class WeatherFragment : Fragment() {
     private fun provideLocation() {
         val location = TrackingUtils.getLastKnownLocation(requireContext())
         if (location == null) {
-            weatherViewModel.isLocationSet.value = false
+            uiViewModel.setNoLocation()
             return
         }
         locationViewModel.location.value = Event(location)
@@ -182,7 +187,7 @@ class WeatherFragment : Fragment() {
         }
     }
 
-    private fun setVisibility(it: UiState?) {
+    private fun setVisibility(it: UiViewModel.UiState?) {
         binding.message.visibility =
             if (it == ERROR_MESSAGE_RECEIVED) View.VISIBLE else View.GONE
         binding.retryWeather.visibility =

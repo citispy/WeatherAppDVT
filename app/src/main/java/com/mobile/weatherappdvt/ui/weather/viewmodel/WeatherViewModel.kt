@@ -17,10 +17,7 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
 
     private val currentWeatherInfo: LiveData<CurrentWeatherInfo> = repository.currentWeather
 
-    private val isLoading: LiveData<Boolean> = repository.isLoading
-
-    // FIXME: 2022/01/12 uiState should potentially be in a different ViewModel
-    val uiState = MediatorLiveData<UiState>()
+    val isLoading: LiveData<Boolean> = repository.isLoading
 
     val currentTemp: LiveData<String?> = Transformations.map(currentWeatherInfo) {
         val temp = it.main?.temp?.toInt()?.toString()
@@ -45,8 +42,6 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
         it.errorMessage
     }
 
-    val isLocationSet = MutableLiveData<Boolean>()
-
     val imageDrawable: LiveData<Int?> = Transformations.map(currentWeatherInfo) {
         when (it.weather?.get(0)?.main) {
             RAIN -> R.drawable.forest_rainy
@@ -67,42 +62,5 @@ class WeatherViewModel @Inject constructor(private val repository: WeatherReposi
 
     fun getCurrentWeather(cityName: String?) {
         repository.getCurrentWeather(cityName)
-    }
-
-    fun hasAllWeatherInfo() : Boolean {
-        return currentTemp.value != null &&
-                minTemp.value !== null &&
-                maxTemp.value != null &&
-                weatherDescription.value != null
-    }
-
-    init {
-        uiState.addSource(isLoading) {
-            if (it) {
-                uiState.value = UiState.LOADING
-            }
-        }
-
-        uiState.addSource(errorMessage) {
-            if (it == null) {
-                setUiState(UiState.SUCCESSFULLY_RETRIEVED_DATA)
-            } else {
-                setUiState(UiState.ERROR_MESSAGE_RECEIVED)
-            }
-        }
-
-        uiState.addSource(isLocationSet) {
-            if (isLocationSet.value == false) {
-                setUiState(UiState.NO_LOCATION_FOUND)
-            }
-        }
-    }
-
-    private fun setUiState(state: UiState) {
-        uiState.value = state
-    }
-
-    enum class UiState {
-        LOADING, ERROR_MESSAGE_RECEIVED, SUCCESSFULLY_RETRIEVED_DATA, NO_LOCATION_FOUND
     }
 }
