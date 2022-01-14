@@ -10,7 +10,7 @@ Requests are made to:
 - api.openweathermap.org/data/2.5/weather
 - api.openweathermap.org/data/2.5/forecast
 
-Using the city name. I decided to use the city name in the request because when sending the coordinates, the values received back are not accurate.
+Requests are made using city name as a parameter. I decided to use the city name in the request because when sending the coordinates, the values received back are not accurate.
 The city name is retrieved in two ways, either from Geocoding using coordinates, or from the Places API, depending on whether the location is retrieved from GPS or 
 PlacesAPI.
 
